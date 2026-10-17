@@ -2,30 +2,44 @@
     let activeContent = $state("encryption");
     let encryptedText = $state([]);
     let decryptedText = $state([]);
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ";
-    let keyLetter = $state("F");
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ".split("");
+    let keyLetter = $state("A");
 
     /** @param {"encryption" | "decryption"} element */
     function showContent(element) {
         activeContent = element;
     }
     function GetEncryptText(text) {
+        let keyIndex = alphabet.indexOf(keyLetter.toLocaleUpperCase());        console.log(keyIndex);
         text = document.getElementById("input-encryption").value.toUpperCase();
         document.getElementById("result-encryption").innerText = text.trim();
-        encryptedText.push(text);
-        //let keyIndex = alphabet.indexOf(keyLetter);
+        text = text.split("");
+        let newText = [];
+        for (let i in text){
+            let letterKey = alphabet.indexOf(text[i])
+            console.log(`alphabet[${letterKey} + ${keyIndex}]`)
+            newText.push(alphabet[letterKey + keyIndex])
+        }
+        console.log(text);
+        encryptedText.push(newText.join(""));
         
     }
     function GetDecryptText(text) {
+        let keyIndex = alphabet.indexOf(keyLetter.toLocaleUpperCase());        console.log(keyIndex);
         text = document.getElementById("input-decryption").value.toUpperCase();
         document.getElementById("result-decryption").innerText = text.trim();
-        decryptedText.push(text);
-        //let keyIndex = alphabet.indexOf(keyLetter.toUpperCase());
+        text = text.split("");
+        let newText = [];
+        for (let i in text){
+            let letterKey = alphabet.indexOf(text[i])
+            console.log(`alphabet[${letterKey} - ${keyIndex}]`)
+            newText.push(alphabet[letterKey - keyIndex])
+        }
+        console.log(text);
+        decryptedText.push(newText.join(""));
     }
 </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google Sans:wght@400;700&display=swap" rel="stylesheet"> 
 
 <nav class="navigation">
@@ -110,10 +124,10 @@
         color: white;
     }
     .btn.active:hover {
-        box-shadow: 0px 1px 0px #f25623;
+        box-shadow: 0px 1px 0px #000000;
     }
     .btn:hover {
-        box-shadow: 0px 1px 0px  #f25623;
+        box-shadow: 0px 1px 0px  #000000;
     }
     .navigation {
         display: flex;
@@ -135,7 +149,7 @@
         cursor: pointer;
     }
     .btn-krypter:hover, .btn-dekrypter:hover {
-        box-shadow: 1px 0px 0px  #f25623;
+        box-shadow: 1px 0px 0px  #000000;
     }
     ul {
         list-style-type: none;
