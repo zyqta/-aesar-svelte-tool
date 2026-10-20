@@ -62,6 +62,12 @@
 >
     <h2>KRYPTERING</h2>
     <p>Skriv inn tekst som skal krypteres: </p>
+    <select id="cipher-type">
+        <option disabled>Velg cipher</option>
+        <option value="ceaser-cipher" selected>Caesar Cipher</option>
+        <option value="vigenere-cipher">Vigenere Cipher</option>
+    </select>
+    <br>
     <input type="text" id="input-key" placeholder="Skriv inn nøkkel" bind:value={keyLetter} /><br>
     <input type="text" id="input-encryption" placeholder="Skriv inn tekst her" /> 
     <button id="btn-krypter" class="btn-krypter" onclick={GetEncryptText}>Krypter</button>
@@ -81,6 +87,12 @@
 >
     <h2>DEKRYPTERING</h2>
     <p>Skriv inn tekst som skal dekrypteres:</p>
+    <select id="cipher-type">
+        <option disabled>Velg cipher</option>
+        <option value="ceaser-cipher" selected>Caesar Cipher</option>
+        <option value="vigenere-cipher">Vigenere Cipher</option>
+    </select>
+    <br>
     <input type="text" id="input-key" placeholder="Skriv inn nøkkel" bind:value={keyLetter} /><br>
     <input type="text" id="input-decryption" placeholder="Skriv inn tekst her" /> 
     <button id="btn-dekrypter" class="btn-dekrypter" onclick={GetDecryptText}>Dekrypter</button>
@@ -157,5 +169,11 @@
     }
     li {
         margin-bottom: 5px;
+    }
+    select {
+        width: 300px;
+        padding: 10px;
+        margin-top: 10px;
+        border: none;
     }
 </style>
