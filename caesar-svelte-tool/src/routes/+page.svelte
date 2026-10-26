@@ -4,38 +4,91 @@
     let decryptedText = $state([]);
     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ".split("");
     let keyLetter = $state("A");
+    let encryptionCipher = $state("ceaser-cipher");
+    let decryptionCipher = $state("ceaser-cipher");
 
-    /** @param {"encryption" | "decryption"} element */
     function showContent(element) {
         activeContent = element;
     }
-    function GetEncryptText(text) {
-        let keyIndex = alphabet.indexOf(keyLetter.toLocaleUpperCase());        console.log(keyIndex);
-        text = document.getElementById("input-encryption").value.toUpperCase();
-        document.getElementById("result-encryption").innerText = text.trim();
-        text = text.split("");
+    function GetEncryptText() {
+        if (encryptionCipher === "vigenere-cipher") {
+            GetVigenereEncryptText();
+        } else {
+            GetCaesarEncryptText();
+        }
+    }
+    function GetDecryptText() {
+        if (decryptionCipher === "vigenere-cipher") {
+            GetVigenereDecryptText();
+        } else {
+            GetCaesarDecryptText();
+        }
+    }
+    function GetCaesarEncryptText() {
+        let keyIndex = alphabet.indexOf(keyLetter.toLocaleUpperCase());
+        let inputText = document.getElementById("input-encryption").value.toUpperCase();
+        document.getElementById("result-encryption").innerText = inputText.trim();
+        let text = inputText.split("");
         let newText = [];
         for (let i in text){
             let letterKey = alphabet.indexOf(text[i])
-            console.log(`alphabet[${letterKey} + ${keyIndex}]`)
             newText.push(alphabet[letterKey + keyIndex])
         }
-        console.log(text);
         encryptedText.push(newText.join(""));
         
     }
-    function GetDecryptText(text) {
-        let keyIndex = alphabet.indexOf(keyLetter.toLocaleUpperCase());        console.log(keyIndex);
-        text = document.getElementById("input-decryption").value.toUpperCase();
-        document.getElementById("result-decryption").innerText = text.trim();
-        text = text.split("");
+    function GetCaesarDecryptText() {
+        let keyIndex = alphabet.indexOf(keyLetter.toLocaleUpperCase());
+        let inputText = document.getElementById("input-decryption").value.toUpperCase();
+        document.getElementById("result-decryption").innerText = inputText.trim();
+        let text = inputText.split("");
         let newText = [];
         for (let i in text){
             let letterKey = alphabet.indexOf(text[i])
-            console.log(`alphabet[${letterKey} - ${keyIndex}]`)
             newText.push(alphabet[letterKey - keyIndex])
         }
-        console.log(text);
+        decryptedText.push(newText.join(""));
+    }
+    function GetVigenereEncryptText() {
+        let keyText = document.getElementById("input-key-encryption").value.toUpperCase();
+        let key = keyText.split("");
+        let inputText = document.getElementById("input-encryption").value.toUpperCase();
+        document.getElementById("result-encryption").innerText = inputText.trim();
+        let text = inputText.split("");
+        let newText = [];
+        let keyPosition = 0;
+        for (let i in text) {
+            let letterKey = alphabet.indexOf(text[i]);
+            if (letterKey === -1) {
+                newText.push(text[i]);
+            }
+            else {
+                let keyIndex = alphabet.indexOf(key[keyPosition % key.length]);
+                newText.push(alphabet[(letterKey + keyIndex) % alphabet.length]);
+                keyPosition++;
+            }
+        }
+        encryptedText.push(newText.join(""));
+    }
+    function GetVigenereDecryptText() {
+        let keyText = document.getElementById("input-key-decryption").value.toUpperCase();
+        let key = keyText.split("");
+        let inputText = document.getElementById("input-decryption").value.toUpperCase();
+        document.getElementById("result-decryption").innerText = inputText.trim();
+        let text = inputText.split("");
+        let newText = [];
+        let keyPosition = 0;
+        for (let i in text) {
+            let letterKey = alphabet.indexOf(text[i]);
+            if (letterKey === -1) {
+                newText.push(text[i]);
+            }
+            else {
+                let keyIndex = alphabet.indexOf(key[keyPosition % key.length]);
+                newText.push(alphabet[(letterKey - keyIndex + alphabet.length) % alphabet.length]);
+                keyPosition++;
+            }
+        }
         decryptedText.push(newText.join(""));
     }
 </script>
@@ -61,15 +114,15 @@
     class:active={activeContent === "encryption"}
 >
     <h2>KRYPTERING</h2>
-    <p>Skriv inn tekst som skal krypteres: </p>
-    <select id="cipher-type">
-        <option disabled>Velg cipher</option>
-        <option value="ceaser-cipher" selected>Caesar Cipher</option>
-        <option value="vigenere-cipher">Vigenere Cipher</option>
+    <p>Skriv inn teksten som skal krypteres:</p>
+    <select id="cipher-type-encryption" bind:value={encryptionCipher}>
+        <option disabled>Velg chiffer</option>
+        <option value="ceaser-cipher">Caesar-chiffer</option>
+        <option value="vigenere-cipher">Vigenere-chiffer</option>
     </select>
     <br>
-    <input type="text" id="input-key" placeholder="Skriv inn nøkkel" bind:value={keyLetter} /><br>
-    <input type="text" id="input-encryption" placeholder="Skriv inn tekst her" /> 
+    <input type="text" id="input-key-encryption" placeholder="Skriv inn nøkkelord" bind:value={keyLetter} /><br>
+    <input type="text" id="input-encryption" placeholder="Skriv inn teksten her" />
     <button id="btn-krypter" class="btn-krypter" onclick={GetEncryptText}>Krypter</button>
     <h2 id="result-encryption"></h2>
     <h2>HISTORIKK</h2>
@@ -86,15 +139,15 @@
     class:active={activeContent === "decryption"}
 >
     <h2>DEKRYPTERING</h2>
-    <p>Skriv inn tekst som skal dekrypteres:</p>
-    <select id="cipher-type">
-        <option disabled>Velg cipher</option>
-        <option value="ceaser-cipher" selected>Caesar Cipher</option>
-        <option value="vigenere-cipher">Vigenere Cipher</option>
+    <p>Skriv inn teksten som skal dekrypteres:</p>
+    <select id="cipher-type-decryption" bind:value={decryptionCipher}>
+        <option disabled>Velg chiffer</option>
+        <option value="ceaser-cipher">Caesar-chiffer</option>
+        <option value="vigenere-cipher">Vigenere-chiffer</option>
     </select>
     <br>
-    <input type="text" id="input-key" placeholder="Skriv inn nøkkel" bind:value={keyLetter} /><br>
-    <input type="text" id="input-decryption" placeholder="Skriv inn tekst her" /> 
+    <input type="text" id="input-key-decryption" placeholder="Skriv inn nøkkelord" bind:value={keyLetter} /><br>
+    <input type="text" id="input-decryption" placeholder="Skriv inn teksten her" />
     <button id="btn-dekrypter" class="btn-dekrypter" onclick={GetDecryptText}>Dekrypter</button>
     <h2 id="result-decryption"></h2>
     <h2>HISTORIKK</h2>
