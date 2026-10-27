@@ -6,6 +6,8 @@
     let keyLetter = $state("A");
     let encryptionCipher = $state("ceaser-cipher");
     let decryptionCipher = $state("ceaser-cipher");
+    let otpKeyEncrypt = $state("");
+let otpKeyDecrypt = $state("");
     function showContent(element) {
         activeContent = element;
     }
@@ -95,24 +97,21 @@
         decryptedText.push(newText.join(""));
     }
     function GetOneTimePadEncryptText() {
-        //let keyLetter = Math.floor(Math.random() * alphabet.length);
-        //keyLetter = alphabet[keyLetter];
-        let keyText = document.getElementById("input-key-encryption").value.toUpperCase();
-        let key = keyText.split("");
         let inputText = document.getElementById("input-encryption").value.toUpperCase();
-        document.getElementById("result-encryption").innerText = inputText.trim();
         let text = inputText.split("");
-        let newText = [];
-        for (let i in text) {
+        let OTPKey = [];
+        for (let i = 0; i < text.length; i++) {
             let letterKey = alphabet.indexOf(text[i]);
             if (letterKey === -1) {
                 newText.push(text[i]);
             }
             else {
-                let keyIndex = alphabet.indexOf(key[i % key.length]);
-                newText.push(alphabet[(letterKey + keyIndex) % alphabet.length]);
+                let randomIndex = Math.floor(Math.random() * alphabet.length);
+                OTPKey.push(alphabet[randomIndex]);
             }
         }
+        keyLetter = OTPKey.join("");
+        document.getElementById("input-key-encryption").value = keyLetter;
         encryptedText.push(newText.join(""));
     }
     function GetOneTimePadDecryptText() {
