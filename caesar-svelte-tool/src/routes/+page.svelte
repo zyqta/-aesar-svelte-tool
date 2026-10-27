@@ -100,18 +100,24 @@ let otpKeyDecrypt = $state("");
         let inputText = document.getElementById("input-encryption").value.toUpperCase();
         let text = inputText.split("");
         let OTPKey = [];
+        let newText = [];
         for (let i = 0; i < text.length; i++) {
-            let letterKey = alphabet.indexOf(text[i]);
-            if (letterKey === -1) {
+            let letterIndex = alphabet.indexOf(text[i]);
+            if (letterIndex === -1) {
                 newText.push(text[i]);
+                OTPKey.push("");
             }
             else {
                 let randomIndex = Math.floor(Math.random() * alphabet.length);
-                OTPKey.push(alphabet[randomIndex]);
+                let keyChar = alphabet[randomIndex];
+                OTPKey.push(keyChar);
+                let keyIndex = alphabet.indexOf(keyChar);
+                newText.push(alphabet[(letterIndex + keyIndex) % alphabet.length]);
             }
         }
-        keyLetter = OTPKey.join("");
-        document.getElementById("input-key-encryption").value = keyLetter;
+        let otpKeyEncrypt = OTPKey.filter(char => char !== "").join("");
+        document.getElementById("result-encryption").innerText = inputText.trim();
+        document.getElementById("input-key-encryption").value = otpKeyEncrypt;
         encryptedText.push(newText.join(""));
     }
     function GetOneTimePadDecryptText() {
@@ -121,16 +127,19 @@ let otpKeyDecrypt = $state("");
         document.getElementById("result-decryption").innerText = inputText.trim();
         let text = inputText.split("");
         let newText = [];
-        for (let i in text) {
-            let letterKey = alphabet.indexOf(text[i]);
-            if (letterKey === -1) {
+        let keyPosition = 0;
+        for (let i = 0; i < text.length; i++) {
+            let letterIndex = alphabet.indexOf(text[i]);
+            if (letterIndex === -1) {
                 newText.push(text[i]);
             }
             else {
-                let keyIndex = alphabet.indexOf(key[i % key.length]);
-                newText.push(alphabet[(letterKey - keyIndex + alphabet.length) % alphabet.length]);
+                let keyIndex = alphabet.indexOf(key[keyPosition]);
+                newText.push(alphabet[(letterIndex - keyIndex + alphabet.length) % alphabet.length]);
+                keyPosition++;
             }
         }
+        document.getElementById("result-decryption").innerText = inputText.trim();
         decryptedText.push(newText.join(""));
     }
 </script>
